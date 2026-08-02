@@ -55,3 +55,6 @@ dkms.conf
 docs/doxygen_doc/
 docs/build/tests/test_transport
 tests/test_transport
+
+# AI agent workspace files (per-repo, not upstream)
+AGENTS.md
