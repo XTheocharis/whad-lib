@@ -1,5 +1,6 @@
 {
-  "source": "/tmp/opencode/butterfly/whad-protocol-fork",
-  "commit": "c9244c7b1a3e59c1c34f8f5b69463a1a7a8af730",
-  "generated_root": "/tmp/opencode/butterfly/whad-protocol-fork/dist/nanopb"
+  "source": "../whad-protocol",
+  "commit": "see ../whad-protocol HEAD",
+  "generated_root": "../whad-protocol/dist/nanopb",
+  "note": "Paths are relative to the whad-lib repo root in the standard 4-repo workspace layout (whad-protocol as sibling). Re-run whad-protocol `make` then `cp -r ../whad-protocol/dist/nanopb/whad/protocol/* whad/protocol/` to refresh."
 }
