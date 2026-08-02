@@ -10,9 +10,10 @@
 #include "domains/esb.h"
 #include "domains/unifying.h"
 #include "domains/dot15d4.h"
+#include "domains/board.h"
 
 
-#define WHAD_MESSAGE_MAX_SIZE       (4096)
+#define WHAD_MESSAGE_MAX_SIZE       WHAD_MAX_ENCODED_MESSAGE_SIZE
 
 #ifdef __cplusplus
 extern "C" {
@@ -29,6 +30,7 @@ typedef enum {
 void whad_init(whad_transport_cfg_t *p_transport_cfg);
 whad_result_t whad_get_message(Message *p_msg);
 whad_result_t whad_send_message(Message *p_msg);
+void whad_free_message_resources(Message *p_msg);
 
 /* Whad message decoding. */
 whad_msgtype_t whad_get_message_type(Message *p_msg);

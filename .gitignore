@@ -53,4 +53,5 @@ dkms.conf
 
 # Project specific
 docs/doxygen_doc/
-docs/build/
+docs/build/tests/test_transport
+tests/test_transport

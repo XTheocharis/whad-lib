@@ -25,7 +25,8 @@ namespace whad
         DomainEsb,      /*!< Related to Enhanced ShockBurst domain. */
         DomainPhy,      /*!< Related to PHY domain. */
         DomainUnifying, /*!< Related to Logitech Unifying domain. */
-        DomainDot15d4   /*!< Related to IEEE 802.15.4 domain. */
+        DomainDot15d4,  /*!< Related to IEEE 802.15.4 domain. */
+        DomainBoard
     };
 
     /**
@@ -36,6 +37,7 @@ namespace whad
     {
         protected:
             Message *p_nanopbMessage;       /*!< Pointer to the underlying NanoPb message structure. */
+            bool m_ownsMessage;             /*!< True when this wrapper owns the Message and must release it. */
 
         public:
 
@@ -49,6 +51,10 @@ namespace whad
             Message *getRaw(void);
             MessageType getType(void);
             MessageDomain getDomain(void);
+
+            /* Ownership transfer: after disown() the destructor will not
+             * release the underlying Message (e.g. when the queue takes it). */
+            void disown(void) { m_ownsMessage = false; }
 
         protected:
             virtual void pack();

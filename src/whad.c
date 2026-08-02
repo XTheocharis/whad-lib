@@ -52,7 +52,7 @@ void whad_free_message_resources(Message *p_msg)
 whad_result_t whad_send_message(Message *p_msg)
 {
     /* Serialize our message. */
-    pb_ostream_t stream = pb_ostream_from_buffer(g_tx_message_buf, 1024);
+    pb_ostream_t stream = pb_ostream_from_buffer(g_tx_message_buf, WHAD_MESSAGE_MAX_SIZE);
     if (pb_encode(&stream, Message_fields, p_msg))
     {
         if (stream.bytes_written >0)
@@ -148,6 +148,7 @@ whad_msgtype_t whad_get_message_type(Message *p_msg)
         case Message_phy_tag:
         case Message_unifying_tag:
         case Message_dot15d4_tag:
+        case Message_board_tag:
             msg_type = WHAD_MSGTYPE_DOMAIN;
             break;
 
@@ -191,6 +192,10 @@ whad_domain_t whad_get_message_domain(Message *p_msg)
 
         case Message_dot15d4_tag:
             domain = DOMAIN_DOT15D4;
+            break;
+
+        case Message_board_tag:
+            domain = DOMAIN_BOARD;
             break;
 
         default:

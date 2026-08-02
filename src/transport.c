@@ -3,6 +3,24 @@
 static whad_transport_t gw_transport;
 static uint8_t tx_buf[WHAD_RINGBUF_MAX_SIZE];
 
+static whad_result_t whad_transport_wait_tx_space(int size)
+{
+    if (whad_ringbuf_get_free_size(&gw_transport.tx_buf) >= size)
+    {
+        return WHAD_SUCCESS;
+    }
+    if (gw_transport.state == WHAD_TRANSPORT_IDLE)
+    {
+        (void)whad_transport_send_pending();
+    }
+    if (whad_ringbuf_get_free_size(&gw_transport.tx_buf) >= size)
+    {
+        return WHAD_SUCCESS;
+    }
+
+    return WHAD_RINGBUF_FULL;
+}
+
 
 /**
  * @brief   Initialize WHAD transport API.
@@ -123,14 +141,14 @@ whad_result_t whad_transport_send_pending(void)
 
 whad_result_t whad_transport_get_message(uint8_t *p_buffer, int *p_size)
 {
-    uint8_t header[4];
+    uint8_t header[WHAD_TRANSPORT_FRAME_HEADER_SIZE];
     uint16_t size;
 
     /* Check if we have a complete message. */
-    if (whad_ringbuf_get_size(&gw_transport.rx_buf) >= 4)
+    if (whad_ringbuf_get_size(&gw_transport.rx_buf) >= WHAD_TRANSPORT_FRAME_HEADER_SIZE)
     {
         /* Parse header. */
-        if (whad_ringbuf_copy(&gw_transport.rx_buf, header, 4) == WHAD_ERROR)
+        if (whad_ringbuf_copy(&gw_transport.rx_buf, header, WHAD_TRANSPORT_FRAME_HEADER_SIZE) == WHAD_ERROR)
         {
             *p_size = 0;
             return WHAD_ERROR;
@@ -142,14 +160,21 @@ whad_result_t whad_transport_get_message(uint8_t *p_buffer, int *p_size)
             /* Best case scenario, deduce size and build message. */
             size = header[2] | (header[3] << 8);
 
+            if (size > WHAD_MAX_ENCODED_MESSAGE_SIZE)
+            {
+                whad_ringbuf_skip(&gw_transport.rx_buf, 1);
+                *p_size = 0;
+                return WHAD_ERROR;
+            }
+
             /* Ensure our destination buffer is large enough. */
             if (*p_size >= size)
             {
                 /* Do we have a complete message ? */
-                if (whad_ringbuf_get_size(&gw_transport.rx_buf) >= (size + 4))
+                if (whad_ringbuf_get_size(&gw_transport.rx_buf) >= (size + WHAD_TRANSPORT_FRAME_HEADER_SIZE))
                 {
                     /* We have enough, extract message (skip header). */
-                    whad_ringbuf_skip(&gw_transport.rx_buf, 4);
+                    whad_ringbuf_skip(&gw_transport.rx_buf, WHAD_TRANSPORT_FRAME_HEADER_SIZE);
                     whad_ringbuf_copy(&gw_transport.rx_buf, p_buffer, size);
                     whad_ringbuf_skip(&gw_transport.rx_buf, size);
 
@@ -183,31 +208,43 @@ whad_result_t whad_transport_get_message(uint8_t *p_buffer, int *p_size)
 
 whad_result_t whad_transport_send_message(uint8_t *p_message, int size)
 {
-    uint8_t header[4];
-    int nb_bytes_sent;
+    uint8_t header[WHAD_TRANSPORT_FRAME_HEADER_SIZE];
+    int i;
+    int frame_size;
 
-    if (size == 0)
-        return WHAD_SUCCESS;
+    if ((p_message == NULL) && (size > 0))
+        return WHAD_ERROR;
+    if ((size < 0) || (size > WHAD_MAX_ENCODED_MESSAGE_SIZE))
+        return WHAD_ERROR;
+
+    frame_size = size + WHAD_TRANSPORT_FRAME_HEADER_SIZE;
+    if (whad_transport_wait_tx_space(frame_size) != WHAD_SUCCESS)
+        return WHAD_RINGBUF_FULL;
 
     /* Write header. */
     header[0] = '\xAC';
     header[1] = '\xBE';
     header[2] = (size & 0xff);
     header[3] = (size >> 8) & 0xff;
-    
-    /* Send header, then message payload. */
-    nb_bytes_sent = whad_transport_send(header, 4);
-    if (nb_bytes_sent < 4)
-    {
-        /* Could not send the whole header. */
-        return WHAD_ERROR;
-    }
 
-    nb_bytes_sent = whad_transport_send(p_message, size);
-    if (nb_bytes_sent < size)
-    {
-        /* Could not send the whole buffer. */
-        return WHAD_ERROR;
+    /* Push header + payload; on any full failure, roll back what we have
+     * already pushed so a failed send_message leaves the TX queue as it
+     * was before the call. wait_tx_space reserved capacity but a racing
+     * ISRs or co-routine could still drain it under us. */
+    int pushed = 0;
+    for (i = 0; i < WHAD_TRANSPORT_FRAME_HEADER_SIZE; i++) {
+        if (whad_ringbuf_push(&gw_transport.tx_buf, header[i]) != WHAD_SUCCESS) {
+            whad_ringbuf_skip(&gw_transport.tx_buf, pushed);
+            return WHAD_RINGBUF_FULL;
+        }
+        pushed++;
+    }
+    for (i = 0; i < size; i++) {
+        if (whad_ringbuf_push(&gw_transport.tx_buf, p_message[i]) != WHAD_SUCCESS) {
+            whad_ringbuf_skip(&gw_transport.tx_buf, pushed);
+            return WHAD_RINGBUF_FULL;
+        }
+        pushed++;
     }
 
     /* Success. */
@@ -257,7 +294,7 @@ int whad_transport_send(uint8_t *p_data, int size)
     /* Enqueue as much data as possible. */
     while (i<size)
     {
-        if (whad_ringbuf_push(&gw_transport.tx_buf, p_data[i++]) == WHAD_ERROR)
+        if (whad_ringbuf_push(&gw_transport.tx_buf, p_data[i++]) != WHAD_SUCCESS)
             break;
     }
 

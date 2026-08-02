@@ -26,6 +26,8 @@
 /* Unifying messages. */
 #include <unifying/unifying.hpp>
 
+#include <board/base.hpp>
+
 
 namespace whad
 {

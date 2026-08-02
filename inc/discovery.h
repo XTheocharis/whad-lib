@@ -27,6 +27,7 @@ typedef enum {
     DOMAIN_ANT = discovery_Domain_ANT, /*!< ANT domain*/
     DOMAIN_ANT_PLUS = discovery_Domain_ANT_Plus, /*!< ANT+ domain*/
     DOMAIN_ANT_FS = discovery_Domain_ANT_FS, /*!< ANT FS domain*/
+    DOMAIN_BOARD = discovery_Domain_Board,
 } whad_domain_t;
 
 /* Device capabilities (pre-protocol) */
@@ -39,8 +40,17 @@ typedef enum {
     CAP_HIJACK = discovery_Capability_Hijack, /*!< Can hijack connection */
     CAP_HOOK = discovery_Capability_Hook, /*!< Can hook connection */
     CAP_SIMULATE_ROLE = discovery_Capability_SimulateRole, /*!< Can simulate a role */
-    CAP_NO_RAW_DATA = discovery_Capability_NoRawData /*!< Cannot access raw data */
+    CAP_NO_RAW_DATA = discovery_Capability_NoRawData, /*!< Cannot access raw data */
+    CAP_READ = discovery_Capability_Read,
+    CAP_WRITE = discovery_Capability_Write,
+    CAP_STREAM = discovery_Capability_Stream,
+    CAP_STORE = discovery_Capability_Store
 } whad_capability_t;
+
+#define CAP_BOARD_READ CAP_READ
+#define CAP_BOARD_WRITE CAP_WRITE
+#define CAP_BOARD_STREAM CAP_STREAM
+#define CAP_BOARD_STORE CAP_STORE
 
 typedef enum {
     WHAD_DISCOVERY_UNKNOWN=0,

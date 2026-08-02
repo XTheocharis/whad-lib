@@ -1,10 +1,13 @@
 # Whad-lib Makefile
 
-ifdef ARCH_ARM
+ifneq ($(filter test clean,$(MAKECMDGOALS)),)
+# test or clean goal: ARCH_ARM not required
+else
+ifndef ARCH_ARM
+$(error Architecture not supported.)
+endif
 	CROSS_COMPILE		?= arm-none-eabi-
 	CFLAGS	     		 = -Os -mthumb -mhard-float -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -Wall
-else
-	$(error Architecture not supported.)
 endif
 
 # Define tools names
@@ -51,6 +54,7 @@ INC_FOLDERS += \
 	-Iwhad/protocol/ble \
 	-Iwhad/protocol/dot15d4 \
 	-Iwhad/protocol/esb \
+	-Iwhad/protocol/board \
 	-Iwhad/protocol/phy
 INCLUDE += $(INC_FOLDERS)
 
@@ -62,12 +66,17 @@ INCLUDE += $(INC_FOLDERS)
 	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 
 libwhad.a: $(OBJS)
+	@mkdir -p $(LIB_DIR)
 	echo $(OBJS)
 	$(AR) -rc $(LIB_DIR)/libwhad.a $(OBJS)
 
 all: libwhad.a
 
+test:
+	$(MAKE) -C tests test
+
 clean:
 	@rm -f $(OBJS)
 	@rm lib/*.a
+	@$(MAKE) -C tests clean
 	

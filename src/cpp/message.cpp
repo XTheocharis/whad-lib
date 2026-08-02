@@ -1,18 +1,27 @@
 #include <cstdlib>
+#include <string.h>
 #include "cpp/message.hpp"
 #include <whad.h>
+
+#ifdef BOARD_CLUE
+#include "messagePool.h"
+#endif
 
 /**
  * @brief   Nanopb message wrapper constructor.
  **/
 
-whad::NanoPbMsg::NanoPbMsg(void)
+whad::NanoPbMsg::NanoPbMsg(void) : m_ownsMessage(true)
 {
-    this->p_nanopbMessage = (Message*)malloc(sizeof(Message));
+#ifdef BOARD_CLUE
+    this->p_nanopbMessage = messagePoolAllocateMessage(NULL);
+#else
+    this->p_nanopbMessage = (Message*)calloc(1u, sizeof(Message));
+#endif
 }
 
 
-whad::NanoPbMsg::NanoPbMsg(Message *message)
+whad::NanoPbMsg::NanoPbMsg(Message *message) : m_ownsMessage(false)
 {
     this->p_nanopbMessage = message;
 }
@@ -24,12 +33,14 @@ whad::NanoPbMsg::NanoPbMsg(Message *message)
 
 whad::NanoPbMsg::~NanoPbMsg(void)
 {
-    #if 0
-    if (this->p_nanopbMessage != NULL)
+    if (m_ownsMessage && this->p_nanopbMessage != NULL)
     {
+#ifdef BOARD_CLUE
+        messagePoolReleaseMessage(this->p_nanopbMessage);
+#else
         free(this->p_nanopbMessage);
+#endif
     }
-    #endif
 }
 
 
@@ -126,6 +137,10 @@ whad::MessageDomain whad::NanoPbMsg::getDomain(void)
 
             case DOMAIN_DOT15D4:
                 domain = DomainDot15d4;
+                break;
+
+            case DOMAIN_BOARD:
+                domain = DomainBoard;
                 break;
 
             default:

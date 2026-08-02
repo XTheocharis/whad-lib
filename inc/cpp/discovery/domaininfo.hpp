@@ -22,6 +22,7 @@ namespace whad::discovery {
         DomainAnt = DOMAIN_ANT,                             /*!< Nordic Semiconductor ANT */
         DomainAntPlus = DOMAIN_ANT_PLUS,                    /*!< Nordic Semiconductor ANT+ */
         DomainAntFs = DOMAIN_ANT_FS,                        /*!< Nordic Semiconductor ANT-FS */
+        DomainBoard = DOMAIN_BOARD,
     };
 
     bool isDomainSupported(const whad_domain_desc_t *capabilities, Domains domain);

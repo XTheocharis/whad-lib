@@ -7,6 +7,7 @@
 #include "types.h"
 
 #define     WHAD_RINGBUF_MAX_SIZE    1024
+#define     WHAD_RINGBUF_CAPACITY    (WHAD_RINGBUF_MAX_SIZE - 1)
 
 
 #ifdef __cplusplus
@@ -25,6 +26,7 @@ typedef struct t_whad_ring {
 
 void whad_ringbuf_init(whad_ringbuf_t *p_ringbuf);
 int whad_ringbuf_get_size(whad_ringbuf_t *p_ringbuf);
+int whad_ringbuf_get_free_size(whad_ringbuf_t *p_ringbuf);
 whad_result_t whad_ringbuf_push(whad_ringbuf_t *p_ringbuf, uint8_t data);
 whad_result_t whad_ringbuf_pull(whad_ringbuf_t *p_ringbuf, uint8_t *p_data);
 whad_result_t whad_ringbuf_copy(whad_ringbuf_t *p_ringbuf, uint8_t *p_data, int size);

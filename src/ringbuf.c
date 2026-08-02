@@ -32,7 +32,7 @@ int whad_ringbuf_get_size(whad_ringbuf_t *p_ringbuf)
 
 int whad_ringbuf_get_free_size(whad_ringbuf_t *p_ringbuf)
 {
-    return (WHAD_RINGBUF_MAX_SIZE - whad_ringbuf_get_size(p_ringbuf));
+    return (WHAD_RINGBUF_CAPACITY - whad_ringbuf_get_size(p_ringbuf));
 }
 
 
@@ -48,7 +48,7 @@ whad_result_t whad_ringbuf_push(whad_ringbuf_t *p_ringbuf, uint8_t data)
     int new_head;
 
     /* Do we have enough space ? */
-    if (whad_ringbuf_get_free_size(p_ringbuf) >= 1)
+    if (whad_ringbuf_get_free_size(p_ringbuf) > 0)
     {
         /* Update head and save data. */
         new_head = (p_ringbuf->head + 1)%WHAD_RINGBUF_MAX_SIZE;

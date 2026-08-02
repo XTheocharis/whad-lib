@@ -23,7 +23,8 @@ typedef enum _discovery_Domain {
     discovery_Domain_Mosart = 134217728, 
     discovery_Domain_ANT = 150994944, 
     discovery_Domain_ANT_Plus = 167772160, 
-    discovery_Domain_ANT_FS = 184549376 
+    discovery_Domain_ANT_FS = 184549376, 
+    discovery_Domain_Board = 201326592 
 } discovery_Domain;
 
 /* *
@@ -44,7 +45,11 @@ typedef enum _discovery_Capability {
     discovery_Capability_Hijack = 16, 
     discovery_Capability_Hook = 32, 
     discovery_Capability_SimulateRole = 64, 
-    discovery_Capability_NoRawData = 128 
+    discovery_Capability_NoRawData = 128, 
+    discovery_Capability_Read = 256, 
+    discovery_Capability_Write = 512, 
+    discovery_Capability_Stream = 1024, 
+    discovery_Capability_Store = 2048 
 } discovery_Capability;
 
 /* Struct definitions */
@@ -109,16 +114,16 @@ typedef struct _discovery_Message {
 
 /* Helper constants for enums */
 #define _discovery_Domain_MIN discovery_Domain__DomainNone
-#define _discovery_Domain_MAX discovery_Domain_ANT_FS
-#define _discovery_Domain_ARRAYSIZE ((discovery_Domain)(discovery_Domain_ANT_FS+1))
+#define _discovery_Domain_MAX discovery_Domain_Board
+#define _discovery_Domain_ARRAYSIZE ((discovery_Domain)(discovery_Domain_Board+1))
 
 #define _discovery_DeviceType_MIN discovery_DeviceType_Esp32BleFuzzer
 #define _discovery_DeviceType_MAX discovery_DeviceType_VirtualDevice
 #define _discovery_DeviceType_ARRAYSIZE ((discovery_DeviceType)(discovery_DeviceType_VirtualDevice+1))
 
 #define _discovery_Capability_MIN discovery_Capability__CapNone
-#define _discovery_Capability_MAX discovery_Capability_NoRawData
-#define _discovery_Capability_ARRAYSIZE ((discovery_Capability)(discovery_Capability_NoRawData+1))
+#define _discovery_Capability_MAX discovery_Capability_Store
+#define _discovery_Capability_ARRAYSIZE ((discovery_Capability)(discovery_Capability_Store+1))
 
 
 #ifdef __cplusplus
