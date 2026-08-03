@@ -14,7 +14,7 @@ look at our nRF52 compatible firmware called [ButteRFly](https://github.com/whad
 
 ## What's different on the `clue` branch
 
-This is the `XTheocharis/whad-lib` fork (branch `clue`) tracking `upstream/whad-team/whad-lib#main`. The branch adds the **Board domain C/C++ API** and a meaningful **transport-layer hardening pass** that was forced by the new domain's tight encoded-size budget (1019 bytes). 2 commits ahead of upstream/main; merge base is `db0949f` (2026-04-15).
+This is the `XTheocharis/whad-lib` fork (branch `clue`) tracking `upstream/whad-team/whad-lib#main`. The branch adds the **Board domain C/C++ API** and a meaningful **transport-layer hardening pass** that was forced by the new domain's tight encoded-size budget (1019 bytes). 4 commits ahead of upstream/main; merge base is `db0949f` (2026-04-15).
 
 ### Board domain C API (`inc/domains/board.h` + `src/domains/board.c`, NEW 160+1049L)
 - **X-macro source of truth**: `WHAD_BOARD_MESSAGE_LIST(X)` enumerates 49 entries (28 requests + `command_result` + 20 responses/events). Expanded twice — `WHAD_BOARD_DECLARE_MESSAGE` declares prototypes, `WHAD_BOARD_DEFINE_MESSAGE` emits bodies — producing 98 `whad_board_<name>` / `whad_board_<name>_parse` functions in 8 lines of macro.
