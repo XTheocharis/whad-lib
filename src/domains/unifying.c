@@ -5,7 +5,7 @@ whad_unifying_msgtype_t whad_unifying_get_message_type(Message *p_message)
 {
     whad_unifying_msgtype_t msg_type = WHAD_UNIFYING_UNKNOWN;
 
-    /* Ensure it is a BLE message. */
+    /* Ensure it is a Unifying message. */
     if (whad_get_message_domain(p_message) == DOMAIN_LOGITECH_UNIFYING)
     {
         /* Retrieve the message type. */

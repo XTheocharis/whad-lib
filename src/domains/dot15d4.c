@@ -5,7 +5,7 @@ whad_dot15d4_msgtype_t whad_dot15d4_get_message_type(Message *p_message)
 {
     whad_dot15d4_msgtype_t msg_type = WHAD_DOT15D4_UNKNOWN;
 
-    /* Ensure it is a BLE message. */
+    /* Ensure it is a 802.15.4 message. */
     if (whad_get_message_domain(p_message) == DOMAIN_DOT15D4)
     {
         /* Retrieve the message type. */

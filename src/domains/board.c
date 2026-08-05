@@ -832,7 +832,8 @@ static whad_result_t whad_board_pack(
         return WHAD_ERROR;
     }
 
-    memset(p_message, 0, sizeof(Message));
+    p_message->which_msg = 0;
+    memset(&p_message->msg.board, 0, sizeof(board_Message));
     p_message->which_msg = Message_board_tag;
     p_message->msg.board.request_id = request_id;
     p_message->msg.board.which_msg = tag;

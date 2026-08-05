@@ -5,7 +5,7 @@ whad_esb_msgtype_t whad_esb_get_message_type(Message *p_message)
 {
     whad_esb_msgtype_t msg_type = WHAD_ESB_UNKNOWN;
 
-    /* Ensure it is a BLE message. */
+    /* Ensure it is an ESB message. */
     if (whad_get_message_domain(p_message) == DOMAIN_ESB)
     {
         /* Retrieve the message type. */

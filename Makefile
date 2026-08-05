@@ -20,10 +20,6 @@ SIZE		:= $(CROSS_COMPILE)size
 OBJCOPY		:= $(CROSS_COMPILE)objcopy
 OBJDUMP		:= $(CROSS_COMPILE)objdump
 
-# Nanopb dependency
-NANOPB_DIR := ./nanopb
-WHAD_DIR   := ./protocol
-
 # Build directory
 LIB_DIR := lib
 
@@ -55,7 +51,8 @@ INC_FOLDERS += \
 	-Iwhad/protocol/dot15d4 \
 	-Iwhad/protocol/esb \
 	-Iwhad/protocol/board \
-	-Iwhad/protocol/phy
+	-Iwhad/protocol/phy \
+	-Iwhad/protocol/unifying
 INCLUDE += $(INC_FOLDERS)
 
 %.o: %.cpp

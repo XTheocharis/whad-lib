@@ -3,9 +3,9 @@
 
 whad_phy_msgtype_t whad_phy_get_message_type(Message *p_message)
 {
-    whad_phy_msgtype_t msg_type = WHAD_BLE_UNKNOWN;
+    whad_phy_msgtype_t msg_type = WHAD_PHY_UNKNOWN;
 
-    /* Ensure it is a BLE message. */
+    /* Ensure it is a PHY message. */
     if (whad_get_message_domain(p_message) == DOMAIN_PHY)
     {
         /* Retrieve the message type. */
