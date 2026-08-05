@@ -4,7 +4,7 @@ using namespace whad::ble;
 
 DeleteSequence::DeleteSequence(BleMsg &message) : BleMsg(message)
 {
-    /* TODO: parsing code in C and C++ */
+    m_seqId = this->getMessage()->msg.ble.msg.delete_seq.id;
 }
 
 /**

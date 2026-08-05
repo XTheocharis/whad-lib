@@ -4,7 +4,17 @@ using namespace whad::ble;
 
 Connected::Connected(BleMsg &message) : BleMsg(message)
 {
-    /* TODO: Unpack in C and C++ */
+    Message *pMsg = this->getMessage();
+
+    m_connHandle = pMsg->msg.ble.msg.connected.conn_handle;
+    m_advAddr = BDAddress(
+        (AddressType)pMsg->msg.ble.msg.connected.adv_addr_type,
+        pMsg->msg.ble.msg.connected.advertiser
+    );
+    m_initAddr = BDAddress(
+        (AddressType)pMsg->msg.ble.msg.connected.init_addr_type,
+        pMsg->msg.ble.msg.connected.initiator
+    );
 }
 
 /**

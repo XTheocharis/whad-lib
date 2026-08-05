@@ -42,7 +42,27 @@ void SetAdvData::pack()
 
 void SetAdvData::unpack()
 {
-    /* TODO */
+    whad_result_t result;
+    uint8_t advData[31];
+    uint8_t scanRspData[31];
+    int advDataLength = 0;
+    int scanRspLength = 0;
+
+    result = whad_ble_set_adv_data_parse(
+        this->getMessage(),
+        advData,
+        &advDataLength,
+        scanRspData,
+        &scanRspLength
+    );
+
+    if (result == WHAD_ERROR)
+    {
+        throw WhadMessageParsingError();
+    }
+
+    m_advDataLength = advDataLength;
+    m_scanRspLength = scanRspLength;
 }
 
 uint8_t *SetAdvData::getAdvData()
