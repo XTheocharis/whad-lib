@@ -1,0 +1,15 @@
+name: C library tests
+on:
+  push:
+    branches: [ "main", "clue" ]
+  pull_request:
+    branches: [ "main", "clue" ]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Run transport tests
+        run: make test

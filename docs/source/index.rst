@@ -22,6 +22,7 @@ WHAD C/C++ Library documentation
     c/esb
     c/phy
     c/unifying
+    c/board
 
 .. toctree::
     :maxdepth: 2

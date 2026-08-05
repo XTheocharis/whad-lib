@@ -267,41 +267,6 @@ void whad_transport_data_sent(void)
 }
 
 
-/**
- * @brief   Add a data byte to WHAD transport TX buffer.
- * @param   data    Byte to send
- * @returns WHAD_SUCCESS on success, WHAD_ERROR otherwise.
- */
-
-whad_result_t whad_transport_send_byte(uint8_t data)
-{
-    /* Enqueue data in TX buffer. */
-    return whad_ringbuf_push(&gw_transport.tx_buf, data);
-}
-
-
-/**
- * @brief   Add a buffer to WHAD transport TX buffer
- * @param   p_data  Pointer to a buffer to send
- * @param   size    Number of bytes to send
- * @returns WHAD_SUCCESS on success, WHAD_ERROR otherwise
- */
-
-int whad_transport_send(uint8_t *p_data, int size)
-{
-    int i=0;
-
-    /* Enqueue as much data as possible. */
-    while (i<size)
-    {
-        if (whad_ringbuf_push(&gw_transport.tx_buf, p_data[i++]) != WHAD_SUCCESS)
-            break;
-    }
-
-    /* Return the number of bytes added to the send queue. */
-    return i;
-}
-
 int whad_transport_get_txbuf_size(void)
 {
     return whad_ringbuf_get_size(&gw_transport.tx_buf);
