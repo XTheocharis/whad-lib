@@ -21,13 +21,14 @@ Verbose messages
 
 Verbose messages contain text that will be sent to the host and that will be
 displayed when verbose mode is enabled by the user. These messages can be
-created using the :cpp:func:`whad_verbose` function (which is a wrapper for the
-:cpp:func:`whad_generic_verbose_message` function):
+created using the :cpp:func:`whad_generic_verbose_message` function:
 
 .. code-block:: C
 
+    Message msg;
+
     /* Create a verbose message. */
-    whad_verbose("This is some information for the user.");
+    whad_generic_verbose_message(&msg, "This is some information for the user.");
 
 
 Debug messages

@@ -310,44 +310,6 @@ whad_result_t whad_discovery_domain_info_resp(Message *p_message, whad_domain_t 
 
 
 /**
- * @brief Parse a domain info query.
- * 
- * @param[in]       p_message           Pointer to the message to parse
- * @param[in,out]   p_domain            Pointer to the domain contained in the query
- * @param[in,out]   p_supp_commands     Pointer to a supported commands field
- * 
- * @retval          WHAD_SUCCESS        Success.
- * @retval          WHAD_ERROR          Invalid message or domain pointer.
- **/
-
-whad_result_t whad_discovery_domain_info_resp_parse(Message *p_message, whad_domain_t *p_domain,
-                                                    uint64_t *p_supp_commands)
-{
-     /* Sanity check. */
-    if ((p_message == NULL) || (p_domain == NULL) || (p_supp_commands == NULL))
-    {
-        return WHAD_ERROR;
-    }
-
-    if (p_message->which_msg == Message_discovery_tag)
-    {
-        if (p_message->msg.discovery.which_msg == discovery_Message_domain_resp_tag)
-        {
-            /* Report selected domain. */
-            *p_domain = p_message->msg.discovery.msg.domain_resp.domain;
-            *p_supp_commands = p_message->msg.discovery.msg.domain_resp.supported_commands;
-
-            /* Success. */
-            return WHAD_SUCCESS;
-        }
-    }
-
-    /* Nope, that's not a Discovery Domain info query :( */
-    return WHAD_ERROR;
-}
-
-
-/**
  * @brief Initialize a discovery device reset message.
  * 
  * @param[in,out]   p_message           Pointer to the message structure to initialize

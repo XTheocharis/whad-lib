@@ -59,10 +59,6 @@ whad_result_t whad_generic_debug_message(Message *p_message, uint32_t level, cha
 
 /* Populate a progress message. */
 whad_result_t whad_generic_progress_message(Message *p_message, uint32_t value);
-whad_result_t whad_generic_progress_message_parse(Message *p_message, uint32_t *p_value);
-
-/* Verbose message helper. */
-whad_result_t whad_verbose(char *psz_message);
 
 #ifdef __cplusplus
 }

@@ -143,62 +143,7 @@ whad_result_t whad_generic_verbose_message(Message *p_message, char *psz_message
     return WHAD_SUCCESS;
 }
 
-whad_result_t whad_generic_verbose_message_parse(Message *p_message, char **ppsz_message)
-{
-    /* Sanity check. */
-    if ((p_message == NULL) || (ppsz_message == NULL))
-    {
-        return WHAD_ERROR;
-    }
 
-    if (p_message->which_msg == Message_generic_tag)
-    {
-        if (p_message->msg.generic.which_msg == generic_Message_verbose_tag)
-        {
-            /* VerboseMsg.data is a nanopb CALLBACK field (generic.pb.h:25).
-             * Bytes are delivered via the decode callback registered on
-             * p_message->msg.generic.msg.verbose.data.funcs.decode *during*
-             * pb_decode() — they are NOT stored in the struct afterwards.
-             * This parse() therefore cannot hand back a char * after the
-             * fact; the caller must register a decode callback that captures
-             * the bytes before invoking pb_decode(). */
-            /* TODO: provide a decode-callback helper API for verbose data. */
-            *ppsz_message = NULL;
-            return WHAD_ERROR;
-        }
-    }
-
-    /* Nope. */
-    return WHAD_ERROR;
-}
-
-
-/**
- * @brief WHAD verbose helper
- * 
- * This function sends a verbose message to the host.
- * 
- * @param[in]       psz_message   Pointer to the message string to include in this verbose message.
- * 
- * @retval          WHAD_SUCCESS  Success
- * @retval          WHAD_ERROR    Wrong message pointer
- */
-
-whad_result_t whad_verbose(char *psz_message)
-{
-    whad_result_t result;
-    Message msg;
-
-    result = whad_generic_verbose_message(&msg, psz_message);
-    if (result == WHAD_SUCCESS)
-    {
-        return whad_send_message(&msg);
-    }
-    else
-    {
-        return WHAD_ERROR;
-    }
-}
 
 
 /**
@@ -292,36 +237,3 @@ whad_result_t whad_generic_progress_message(Message *p_message, uint32_t value)
 }
 
 
-/**
- * @brief Initialize a generic progress message.
- * 
- * @param[in]       p_message     Pointer to a `Messsage` structure
- * @param[in, out]  p_value       Pointer to a progress value
- * 
- * @retval          WHAD_SUCCESS  Success.
- * @retval          WHAD_ERROR    Invalid message pointer.
- **/
-
-whad_result_t whad_generic_progress_message_parse(Message *p_message, uint32_t *p_value)
-{
-    /* Sanity check. */
-    if ((p_message == NULL) || (p_value == NULL))
-    {
-        return WHAD_ERROR;
-    }
-
-    if (p_message->which_msg == Message_generic_tag)
-    {
-        if (p_message->msg.generic.which_msg == generic_Message_progress_tag)
-        {
-            /* Save progress value. */
-            *p_value = p_message->msg.generic.msg.progress.value;
-
-            /* Success. */
-            return WHAD_SUCCESS;
-        }
-    }
-
-    /* Nope. */
-    return WHAD_ERROR;        
-}

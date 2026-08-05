@@ -97,10 +97,8 @@ whad_result_t whad_discovery_device_info_resp(
     uint32_t fw_version_rev,
     whad_domain_desc_t *capabilities);
 
-/* Create/parse a domain info response. */
+/* Create a domain info response. */
 whad_result_t whad_discovery_domain_info_resp(Message *p_message, whad_domain_t domain, whad_domain_desc_t *p_capabilities);
-whad_result_t whad_discovery_domain_info_resp_parse(Message *p_message, whad_domain_t *p_domain,
-                                                    uint64_t *p_supp_commands);
 
 /* Create a device reset query. */
 whad_result_t whad_discovery_device_reset(Message *p_message);
