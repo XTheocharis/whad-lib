@@ -155,17 +155,21 @@ whad_result_t whad_generic_verbose_message_parse(Message *p_message, char **ppsz
     {
         if (p_message->msg.generic.which_msg == generic_Message_verbose_tag)
         {
-            /* Save result. */
-            /* TODO: how to get a pointer to the bytes ?? */
+            /* VerboseMsg.data is a nanopb CALLBACK field (generic.pb.h:25).
+             * Bytes are delivered via the decode callback registered on
+             * p_message->msg.generic.msg.verbose.data.funcs.decode *during*
+             * pb_decode() — they are NOT stored in the struct afterwards.
+             * This parse() therefore cannot hand back a char * after the
+             * fact; the caller must register a decode callback that captures
+             * the bytes before invoking pb_decode(). */
+            /* TODO: provide a decode-callback helper API for verbose data. */
             *ppsz_message = NULL;
-
-            /* Success. */
-            return WHAD_SUCCESS;
+            return WHAD_ERROR;
         }
     }
 
     /* Nope. */
-    return WHAD_ERROR;    
+    return WHAD_ERROR;
 }
 
 

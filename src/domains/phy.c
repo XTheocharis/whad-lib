@@ -1106,10 +1106,14 @@ whad_result_t whad_phy_send_raw_iq(Message *p_message, uint8_t *p_iq_stream, int
     p_message->which_msg = Message_phy_tag;
     p_message->msg.phy.which_msg =  phy_Message_send_raw_tag;
 
-    /* TODO: implement support for repeated and packed IQs */
-
-    /* Success. */
-    return WHAD_SUCCESS;
+    /* SendRawCmd.iq is a nanopb CALLBACK field (phy.pb.h:120) — packing the
+     * IQ bytes requires wiring an encode callback on
+     * p_message->msg.phy.msg.send_raw.iq.funcs.encode plus a persistent
+     * (data, length) descriptor in .arg.  The function signature does not
+     * expose a place to keep that descriptor alive until pb_encode() runs,
+     * so we refuse rather than emit an empty IQ payload. */
+    /* TODO: add a callback helper + state struct to support IQ packing. */
+    return WHAD_ERROR;
 }
 
 

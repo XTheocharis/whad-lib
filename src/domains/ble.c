@@ -871,7 +871,9 @@ whad_result_t whad_ble_adv_mode_parse(Message *p_message, whad_ble_adv_mode_para
 }
 
 
-/** TODO Not yet supported, need some fix in whad-protocol. */
+/** SetAdvDataCmd uses nanopb CALLBACK fields (ble.pb.h:103-106); a correct
+ *  implementation requires encode callbacks on scan_data/scanrsp_data and is
+ *  not achievable by memcpy into static byte arrays. */
 whad_result_t whad_ble_set_adv_data(Message *p_message, uint8_t *p_adv_data, int adv_data_length, uint8_t *p_scanrsp_data, int scanrsp_data_length)
 {
     /* Sanity check. */
@@ -884,38 +886,37 @@ whad_result_t whad_ble_set_adv_data(Message *p_message, uint8_t *p_adv_data, int
     p_message->which_msg = Message_ble_tag;
     p_message->msg.ble.which_msg = ble_Message_set_adv_data_tag;
 
-    /* Set avertising data, if provided. */
-    if (adv_data_length > 0)
+    /* Cannot send more than 31 bytes in advertisement data. */
+    if ((adv_data_length > 31) || (scanrsp_data_length > 31))
     {
-        /* Cannot send more than 31 bytes in advertisement data. */
-        if (adv_data_length > 31)
-        {
-            adv_data_length = 31;
-        }
-        //p_message->msg.ble.msg.adv_mode.scan_data.size = scan_data_length;
-        //memcpy(p_message->msg.ble.msg.adv_mode.scan_data.bytes, p_scan_data, scan_data_length);
+        return WHAD_ERROR;
     }
 
-    /* Set scan response data, if provided. */
-    if (scanrsp_data_length > 0)
-    {
-        /* Cannot send more than 31 bytes in scan response data. */
-        if (scanrsp_data_length > 31)
-        {
-            scanrsp_data_length = 31;
-        }
-
-        //p_message->msg.ble.msg.adv_mode.scanrsp_data.size = scanrsp_data_length;
-        //memcpy(p_message->msg.ble.msg.adv_mode.scanrsp_data.bytes, p_scanrsp_data, scanrsp_data_length);
-    }
-
-    /* Success. */
-    return WHAD_SUCCESS;   
+    /* SetAdvDataCmd.scan_data and .scanrsp_data are CALLBACK fields
+     * (ble.pb.h:104-105) — populating them needs encode callbacks plus a
+     * persistent buffer descriptor, which this function signature cannot
+     * provide.  The commented-out memcpy lines below referenced the WRONG
+     * union member (adv_mode vs set_adv_data) AND treated CALLBACK fields
+     * as static PB_BYTES_ARRAY_T — uncommenting would corrupt the callback
+     * function pointers.  Reject until a callback-based helper exists. */
+    /* TODO: add encode-callback helpers for SetAdvDataCmd bytes fields. */
+    (void)adv_data_length;
+    (void)scanrsp_data_length;
+    return WHAD_ERROR;
 }
 
 whad_result_t whad_ble_set_adv_data_parse(Message *p_message, uint8_t *p_adv_data, int *p_adv_data_length, 
                                     uint8_t *p_scanrsp_data, int *p_scanrsp_data_length)
 {
+    /* SetAdvDataCmd.scan_data/.scanrsp_data are CALLBACK fields (ble.pb.h);
+     * bytes arrive via the decode callback during pb_decode(), not in the
+     * struct.  See whad_ble_set_adv_data() above for details. */
+    /* TODO: add decode-callback helpers to capture adv/scanrsp bytes. */
+    (void)p_message;
+    (void)p_adv_data;
+    (void)p_adv_data_length;
+    (void)p_scanrsp_data;
+    (void)p_scanrsp_data_length;
     return WHAD_ERROR;
 }
 
