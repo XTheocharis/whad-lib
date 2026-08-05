@@ -11,48 +11,50 @@ extern "C" {
  * Enum/Structure definitions
  ********************************/
 
-typedef enum {
-    PHY_LORA_SF7 = phy_LoRaSpreadingFactor_SF7,
-    PHY_LORA_SF8 = phy_LoRaSpreadingFactor_SF8,
-    PHY_LORA_SF9 = phy_LoRaSpreadingFactor_SF9,
-    PHY_LORA_SF10 = phy_LoRaSpreadingFactor_SF10,
-    PHY_LORA_SF11 = phy_LoRaSpreadingFactor_SF11,
-    PHY_LORA_SF12 = phy_LoRaSpreadingFactor_SF12
-} whad_phy_lora_sf_t;
+/*
+ * The C wrappers below are typedef aliases of the proto-generated enum types,
+ * not parallel enums. This eliminates enum-conversion warnings under
+ * -Wextra when assigning between the C API and the nanopb-encoded message
+ * fields (which use the proto enum types directly). The named constants
+ * (PHY_LORA_SF7, MOD_ASK, ...) are preserved as macros so existing code
+ * keeps compiling unchanged.
+ */
+typedef phy_LoRaSpreadingFactor whad_phy_lora_sf_t;
+#define PHY_LORA_SF7  phy_LoRaSpreadingFactor_SF7
+#define PHY_LORA_SF8  phy_LoRaSpreadingFactor_SF8
+#define PHY_LORA_SF9  phy_LoRaSpreadingFactor_SF9
+#define PHY_LORA_SF10 phy_LoRaSpreadingFactor_SF10
+#define PHY_LORA_SF11 phy_LoRaSpreadingFactor_SF11
+#define PHY_LORA_SF12 phy_LoRaSpreadingFactor_SF12
 
-typedef enum {
-    PHY_LORA_CR45 = phy_LoRaCodingRate_CR45,
-    PHY_LORA_CR46 = phy_LoRaCodingRate_CR46,
-    PHY_LORA_CR47 = phy_LoRaCodingRate_CR47,
-    PHY_LORA_CR48 = phy_LoRaCodingRate_CR48,
-} whad_phy_lora_cr_t;
+typedef phy_LoRaCodingRate whad_phy_lora_cr_t;
+#define PHY_LORA_CR45 phy_LoRaCodingRate_CR45
+#define PHY_LORA_CR46 phy_LoRaCodingRate_CR46
+#define PHY_LORA_CR47 phy_LoRaCodingRate_CR47
+#define PHY_LORA_CR48 phy_LoRaCodingRate_CR48
 
-typedef enum {
-    PHY_BIG_ENDIAN = phy_Endianness_BIG,
-    PHY_LITTLE_ENDIAN = phy_Endianness_LITTLE
-} whad_phy_endian_t;
+typedef phy_Endianness whad_phy_endian_t;
+#define PHY_BIG_ENDIAN    phy_Endianness_BIG
+#define PHY_LITTLE_ENDIAN phy_Endianness_LITTLE
 
-typedef enum {
-  MOD_ASK  = phy_Modulation_ASK,
-  MOD_FSK  = phy_Modulation_FSK,
-  MOD_4FSK = phy_Modulation_FOURFSK,
-  MOD_GFSK = phy_Modulation_GFSK,
-  MOD_MSK  = phy_Modulation_MSK,
-  MOD_BPSK = phy_Modulation_BPSK,
-  MOD_QPSK = phy_Modulation_QPSK,
-  MOD_LORA = phy_Modulation_LORA
-} whad_phy_modulation_t;
+typedef phy_Modulation whad_phy_modulation_t;
+#define MOD_ASK  phy_Modulation_ASK
+#define MOD_FSK  phy_Modulation_FSK
+#define MOD_4FSK phy_Modulation_FOURFSK
+#define MOD_GFSK phy_Modulation_GFSK
+#define MOD_MSK  phy_Modulation_MSK
+#define MOD_BPSK phy_Modulation_BPSK
+#define MOD_QPSK phy_Modulation_QPSK
+#define MOD_LORA phy_Modulation_LORA
 
-typedef enum {
-    PHY_TXPOWER_LOW = phy_TXPower_LOW,
-    PHY_TXPOWER_MEDIUM = phy_TXPower_MEDIUM,
-    PHY_TXPOWER_HIGH = phy_TXPower_HIGH
-} whad_phy_txpower_t;
+typedef phy_TXPower whad_phy_txpower_t;
+#define PHY_TXPOWER_LOW    phy_TXPower_LOW
+#define PHY_TXPOWER_MEDIUM phy_TXPower_MEDIUM
+#define PHY_TXPOWER_HIGH   phy_TXPower_HIGH
 
-typedef enum {
-    PHY_JAM_MODE_CONTINUOUS = phy_JammingMode_CONTINUOUS,
-    PHY_JAM_MODE_REACTIVE = phy_JammingMode_REACTIVE
-} whad_phy_jam_mode_t;
+typedef phy_JammingMode whad_phy_jam_mode_t;
+#define PHY_JAM_MODE_CONTINUOUS phy_JammingMode_CONTINUOUS
+#define PHY_JAM_MODE_REACTIVE   phy_JammingMode_REACTIVE
 
 typedef struct {
     uint32_t bandwidth;
