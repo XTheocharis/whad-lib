@@ -56,6 +56,6 @@ Records where the checked-in nanopb outputs came from. Re-pointed to `../whad-pr
 
 ### Forward references
 Consumed by:
-- `butterfly` firmware (git submodule of butterfly; dispatcher `src/boardModule.cpp` calls the C API directly).
+- `butterfly` firmware (consumes whad-lib as a workspace sibling; dispatcher `src/boardModule.cpp` calls the C API directly).
 
-See workspace `README.md` for the integrated 4-repo picture and `TODO.md` for outstanding work.
+See workspace `README.md` for the integrated 4-repo picture.
