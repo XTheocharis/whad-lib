@@ -23,8 +23,8 @@ This is the `XTheocharis/whad-lib` fork (branch `clue`) tracking `upstream/whad-
 - Generic `whad_board_pack` / `whad_board_unpack` serializers with defense-in-depth re-validation.
 - Dispatch helpers: `whad_board_get_message_type(Message*)` → tag enum; 28-arm `whad_board_command_from_message_type(msgtype, &cmd)` reverse-map.
 
-### Board domain C++ API (`inc/cpp/board/base.hpp` + `src/cpp/domains/board/board_base.cpp`, NEW 77+26L)
-Thin `BoardMsg : NanoPbMsg` wrapper. **No per-message C++ subclasses** (unlike ble=41, phy=28, dot15d4=17, esb=13, unifying=14) — board is intentionally minimal; downstream code uses the C API directly.
+### Board domain C++ API (`inc/cpp/board/base.hpp` + `src/cpp/domains/board/`, NEW 77+26L base)
+Thin `BoardMsg : NanoPbMsg` wrapper plus **50 per-message C++ subclasses** in `src/cpp/domains/board/` (one .cpp per message; ble=41, phy=27, dot15d4=16, esb=12, unifying=13 for comparison). Downstream firmware (`butterfly`) uses the `BoardMsg` base + C API directly — the subclasses are library API surface for other consumers.
 
 ### Transport hardening (`src/transport.c`, `src/ringbuf.c`, `inc/transport.h`, `inc/ringbuf.h`)
 Forced by the new 1019-byte transport budget that links the proto-encoded size to the embedded ring buffer:
@@ -46,7 +46,7 @@ Forced by the new 1019-byte transport budget that links the proto-encoded size t
 
 ### Build / tests
 - `Makefile` — `test`/`clean` goals bypass the `ARCH_ARM` gate (so `make test` works from host CC). Added `-Iwhad/protocol/board` to include path. `lib/` now `mkdir -p`'d on first build.
-- `tests/` (NEW) — host-only C test suite (`tests/Makefile` + `tests/test_transport.c`, 229L, 8 cases). Covers: zero-size frame, limit-size frame, oversize rejection without mutation, full-ring rejection without partial frame, wraparound frame ordering, partial-input reassembly, magic-byte resync, malicious-length resync. Run with `make test`.
+- `tests/` (NEW) — host-only C test suite: `tests/test_transport.c` (229L, 8 cases — zero-size frame, limit-size frame, oversize rejection, full-ring rejection, wraparound ordering, partial-input reassembly, magic-byte resync, malicious-length resync) and `tests/test_board.c` (76 entries — pack/parse round-trips + 38 validator cases covering enum ranges, byte-array bounds, repeated-field counts, status bitmasks, nested lease tokens, streaming chunks). Run with `make test`.
 
 ### Drift checker (`tools/check_generated_protocol.sh`, NEW 13L)
 `diff -u`s checked-in `whad/protocol/*.pb.{c,h}` against `../whad-protocol/dist/nanopb/whad/protocol/` (sibling repo in standard 4-repo workspace layout; `PROTO_REF` env var overrides). Run after copying fresh nanopb outputs to confirm byte-identical sync.
@@ -58,4 +58,4 @@ Records where the checked-in nanopb outputs came from. Re-pointed to `../whad-pr
 Consumed by:
 - `butterfly` firmware (git submodule of butterfly; dispatcher `src/boardModule.cpp` calls the C API directly).
 
-See workspace `README.md` for the integrated 4-repo picture and `TODO.md` for outstanding work (notably: no per-message C++ subclasses, no `tests/test_board.c`).
+See workspace `README.md` for the integrated 4-repo picture and `TODO.md` for outstanding work.
